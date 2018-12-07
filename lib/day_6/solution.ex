@@ -2,14 +2,16 @@ defmodule Advent.Day6.Solution do
   def solve(input_file) do
     coords = file_to_coords(input_file)
     # infinite_indices = outside_indices(coords)
+    {_, max_x, _, max_y} = coord_limits(coords)
+    max_iter = max(max_x, max_y)
 
     processed =
-      Enum.reduce((1..500), {coords, Map.keys(coords)}, fn iter, acc ->
+      Enum.reduce((1..max_iter), {coords, Map.keys(coords)}, fn iter, acc ->
         iteration(acc, iter)
       end)
       |> elem(0)
 
-    infinite_indices = get_edge_owners(processed)
+    infinite_indices = get_edge_owners(processed, max_iter)
 
     processed
     |> Enum.map(fn {_, %{index: index}} -> index end)
@@ -23,13 +25,13 @@ defmodule Advent.Day6.Solution do
     |> elem(1)
   end
 
-  defp get_edge_owners(coords) do
-    Enum.flat_map((0..500), fn i ->
+  defp get_edge_owners(coords, max_iter) do
+    Enum.flat_map((0..max_iter), fn i ->
       [
         Map.get(coords, {0, i}, %{}) |> Map.get(:index),
-        Map.get(coords, {500, i}, %{}) |> Map.get(:index),
+        Map.get(coords, {max_iter, i}, %{}) |> Map.get(:index),
         Map.get(coords, {i, 0}, %{}) |> Map.get(:index),
-        Map.get(coords, {i, 500}, %{}) |> Map.get(:index),
+        Map.get(coords, {i, max_iter}, %{}) |> Map.get(:index),
       ]
     end)
     |> Enum.uniq()
@@ -48,6 +50,12 @@ defmodule Advent.Day6.Solution do
       {List.to_tuple(coords), %{index: index, iteration: 0}}
     end)
     |> Enum.into(%{})
+  end
+
+  defp coord_limits(coords) do
+    {{{min_x, _}, _}, {{max_x, _}, _}} = Enum.min_max_by(coords, & elem(elem(&1, 0), 0))
+    {{{_, min_y}, _}, {{_, max_y}, _}} = Enum.min_max_by(coords, & elem(elem(&1, 0), 1))
+    {min_x, max_x, min_y, max_y}
   end
 
   def iteration({all_coords, to_process_coords}, n) do
