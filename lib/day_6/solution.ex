@@ -6,7 +6,7 @@ defmodule Advent.Day6.Solution do
     max_iter = max(max_x, max_y)
 
     processed =
-      Enum.reduce((1..max_iter), {coords, Map.keys(coords)}, fn iter, acc ->
+      Enum.reduce(1..max_iter, {coords, Map.keys(coords)}, fn iter, acc ->
         iteration(acc, iter)
       end)
       |> elem(0)
@@ -26,12 +26,12 @@ defmodule Advent.Day6.Solution do
   end
 
   defp get_edge_owners(coords, max_iter) do
-    Enum.flat_map((0..max_iter), fn i ->
+    Enum.flat_map(0..max_iter, fn i ->
       [
         Map.get(coords, {0, i}, %{}) |> Map.get(:index),
         Map.get(coords, {max_iter, i}, %{}) |> Map.get(:index),
         Map.get(coords, {i, 0}, %{}) |> Map.get(:index),
-        Map.get(coords, {i, max_iter}, %{}) |> Map.get(:index),
+        Map.get(coords, {i, max_iter}, %{}) |> Map.get(:index)
       ]
     end)
     |> Enum.uniq()
@@ -53,8 +53,8 @@ defmodule Advent.Day6.Solution do
   end
 
   defp coord_limits(coords) do
-    {{{min_x, _}, _}, {{max_x, _}, _}} = Enum.min_max_by(coords, & elem(elem(&1, 0), 0))
-    {{{_, min_y}, _}, {{_, max_y}, _}} = Enum.min_max_by(coords, & elem(elem(&1, 0), 1))
+    {{{min_x, _}, _}, {{max_x, _}, _}} = Enum.min_max_by(coords, &elem(elem(&1, 0), 0))
+    {{{_, min_y}, _}, {{_, max_y}, _}} = Enum.min_max_by(coords, &elem(elem(&1, 0), 1))
     {min_x, max_x, min_y, max_y}
   end
 
@@ -63,6 +63,7 @@ defmodule Advent.Day6.Solution do
 
     Enum.reduce(to_process_coords, {all_coords, []}, fn coords, acc ->
       v = Map.get(all_coords, coords)
+
       acc
       |> perform_direction(n, v.index, left(coords))
       |> perform_direction(n, v.index, right(coords))
@@ -79,8 +80,10 @@ defmodule Advent.Day6.Solution do
     case Map.get(coords_acc, coords) do
       nil ->
         {Map.put(coords_acc, coords, %{index: index, iteration: n}), [coords | processed_coords]}
+
       %{iteration: ^n, index: i} when i != index ->
         {Map.put(coords_acc, coords, %{index: -1, iteration: n}), processed_coords}
+
       _ ->
         acc
     end

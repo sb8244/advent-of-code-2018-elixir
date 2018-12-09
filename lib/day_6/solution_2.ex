@@ -14,18 +14,19 @@ defmodule Advent.Day6.Solution2 do
   def solve(input_file, max_size) do
     coords = file_to_coords(input_file)
 
-    {{min_x, _}, {max_x, _}} = Enum.min_max_by(coords, & elem(&1, 0))
-    {{_, min_y}, {_, max_y}} = Enum.min_max_by(coords, & elem(&1, 1))
+    {{min_x, _}, {max_x, _}} = Enum.min_max_by(coords, &elem(&1, 0))
+    {{_, min_y}, {_, max_y}} = Enum.min_max_by(coords, &elem(&1, 1))
 
-    Enum.map((min_x..max_x), fn x ->
+    Enum.map(min_x..max_x, fn x ->
       Task.async(fn ->
-        Enum.reduce((min_y..max_y), 0, fn y, sums ->
+        Enum.reduce(min_y..max_y, 0, fn y, sums ->
           Enum.reduce(coords, 0, fn coord, sum ->
             sum + distance({x, y}, coord)
           end)
           |> case do
             sum when sum < max_size ->
               sums + 1
+
             _ ->
               sums
           end
@@ -38,7 +39,7 @@ defmodule Advent.Day6.Solution2 do
   end
 
   defp distance({x, y}, {x2, y2}) do
-    abs(x-x2) + abs(y-y2)
+    abs(x - x2) + abs(y - y2)
   end
 
   # defp explore_map(acc, _visited, frontier, _max) when length(frontier) == 0 do

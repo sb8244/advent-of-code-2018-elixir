@@ -9,7 +9,9 @@ defmodule Advent.Day5.Solution do
       l != r && (:string.uppercase(l) == r || :string.lowercase(l) == r)
     end)
     |> case do
-      [] -> polymer
+      [] ->
+        polymer
+
       pairs ->
         pairs
         |> Enum.reduce(polymer, fn pair, polymer ->

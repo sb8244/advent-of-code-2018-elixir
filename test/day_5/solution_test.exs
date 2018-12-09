@@ -15,26 +15,29 @@ defmodule Advent.Day5.SolutionTest do
 
   test "part 1" do
     input = File.read!("input/5.txt") |> String.trim()
+
     assert Solution.run(input)
-    |> String.length() == 10598
+           |> String.length() == 10598
   end
 
   test "part 2" do
     input = File.read!("input/5.txt") |> String.trim()
 
-    assert Enum.map((0..25), fn char_index ->
-        Task.async(fn ->
-          char = to_string([97 + char_index])
-          pruned =
-            input
-            |> String.replace(char, "")
-            |> String.replace(String.upcase(char), "")
-          Solution.run(pruned) |> String.length()
-        end)
-      end)
-      |> Enum.map(fn task ->
-        Task.await(task, 30_000)
-      end)
-      |> Enum.min() == 5312
+    assert Enum.map(0..25, fn char_index ->
+             Task.async(fn ->
+               char = to_string([97 + char_index])
+
+               pruned =
+                 input
+                 |> String.replace(char, "")
+                 |> String.replace(String.upcase(char), "")
+
+               Solution.run(pruned) |> String.length()
+             end)
+           end)
+           |> Enum.map(fn task ->
+             Task.await(task, 30_000)
+           end)
+           |> Enum.min() == 5312
   end
 end

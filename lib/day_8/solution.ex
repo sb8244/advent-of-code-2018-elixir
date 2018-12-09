@@ -11,12 +11,14 @@ defmodule Advent.Day8.Solution do
 
   def reduce(tree = %Node{children: children}, acc, func) do
     acc = func.(tree, acc)
+
     Enum.reduce(children, acc, fn child, acc ->
       reduce(child, acc, func)
     end)
   end
 
-  def sum_by_metadata_entries(%Node{children: children, metadata: metadata}, acc) when children == [] do
+  def sum_by_metadata_entries(%Node{children: children, metadata: metadata}, acc)
+      when children == [] do
     sum =
       metadata
       |> Enum.map(&String.to_integer/1)
@@ -35,7 +37,7 @@ defmodule Advent.Day8.Solution do
 
     sum =
       metadata
-      |> Enum.map(& String.to_integer(&1) - 1)
+      |> Enum.map(&(String.to_integer(&1) - 1))
       |> Enum.reduce(0, fn index, acc ->
         Enum.at(child_sums, index, 0) + acc
       end)
@@ -71,12 +73,13 @@ defmodule Advent.Day8.Solution do
     without_metadata = Enum.drop(rest, num_metadata)
     new_node = Map.put(node, :metadata, this_metadata)
 
-    new_parent = if parent_node do
-      new_parent_children = [new_node | parent_node.children]
-      Map.put(parent_node, :children, new_parent_children)
-    else
-      new_node
-    end
+    new_parent =
+      if parent_node do
+        new_parent_children = [new_node | parent_node.children]
+        Map.put(parent_node, :children, new_parent_children)
+      else
+        new_node
+      end
 
     {without_metadata, new_parent}
   end
