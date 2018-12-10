@@ -40,7 +40,7 @@ defmodule Advent.Day10.Solution do
 
   defp tick_until_touching(points, true, iter), do: {points, iter}
 
-  defp tick_until_touching(points, touching, iter) do
+  defp tick_until_touching(points, _touching, iter) do
     next_points = tick(points)
     touching = all_touching?(next_points)
     tick_until_touching(next_points, touching, iter + 1)
