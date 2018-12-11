@@ -2,7 +2,7 @@ defmodule Advent.Day11.SolutionTest do
   use ExUnit.Case, async: true
   alias Advent.Day11.Solution
 
-  test  "power" do
+  test "power" do
     assert Solution.power(3, 5, 8) == 4
   end
 

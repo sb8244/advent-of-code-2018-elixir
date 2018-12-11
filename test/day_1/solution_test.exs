@@ -5,9 +5,9 @@ defmodule Advent.Day1.SolutionTest do
 
   test "part 1" do
     assert @input
-      |> String.split("\n")
-      |> Enum.map(&String.to_integer/1)
-      |> Enum.sum() == 497
+           |> String.split("\n")
+           |> Enum.map(&String.to_integer/1)
+           |> Enum.sum() == 497
   end
 
   test "part 2" do

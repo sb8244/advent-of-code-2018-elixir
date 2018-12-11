@@ -8,32 +8,34 @@ defmodule Advent.Day10.SolutionTest do
   test "part 1 sample" do
     {tick, visual} = Solution.solve(@sample_input)
     assert tick == 3
+
     assert visual == """
-    X...X..XXX
-    X...X...X.
-    X...X...X.
-    XXXXX...X.
-    X...X...X.
-    X...X...X.
-    X...X...X.
-    X...X..XXX
-    """
+           X...X..XXX
+           X...X...X.
+           X...X...X.
+           XXXXX...X.
+           X...X...X.
+           X...X...X.
+           X...X...X.
+           X...X..XXX
+           """
   end
 
   test "part 1" do
     {tick, visual} = Solution.solve(@input)
     assert tick == 10418
+
     assert visual == """
-    XXXXXX..X....X..X....X..XXXXX...XXXXXX.....XXX..X....X..XXXXX.
-    .....X..XX...X..XX...X..X....X.......X......X...X....X..X....X
-    .....X..XX...X..XX...X..X....X.......X......X....X..X...X....X
-    ....X...X.X..X..X.X..X..X....X......X.......X....X..X...X....X
-    ...X....X.X..X..X.X..X..XXXXX......X........X.....XX....XXXXX.
-    ..X.....X..X.X..X..X.X..X..X......X.........X.....XX....X.....
-    .X......X..X.X..X..X.X..X...X....X..........X....X..X...X.....
-    X.......X...XX..X...XX..X...X...X.......X...X....X..X...X.....
-    X.......X...XX..X...XX..X....X..X.......X...X...X....X..X.....
-    XXXXXX..X....X..X....X..X....X..XXXXXX...XXX....X....X..X.....
-    """
+           XXXXXX..X....X..X....X..XXXXX...XXXXXX.....XXX..X....X..XXXXX.
+           .....X..XX...X..XX...X..X....X.......X......X...X....X..X....X
+           .....X..XX...X..XX...X..X....X.......X......X....X..X...X....X
+           ....X...X.X..X..X.X..X..X....X......X.......X....X..X...X....X
+           ...X....X.X..X..X.X..X..XXXXX......X........X.....XX....XXXXX.
+           ..X.....X..X.X..X..X.X..X..X......X.........X.....XX....X.....
+           .X......X..X.X..X..X.X..X...X....X..........X....X..X...X.....
+           X.......X...XX..X...XX..X...X...X.......X...X....X..X...X.....
+           X.......X...XX..X...XX..X....X..X.......X...X...X....X..X.....
+           XXXXXX..X....X..X....X..X....X..XXXXXX...XXX....X....X..X.....
+           """
   end
 end

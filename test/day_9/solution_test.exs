@@ -32,8 +32,8 @@ defmodule Advent.Day9.SolutionTest do
 
   test "part 1 digraph" do
     assert DigraphSolution.solve(462, 71938)
-    |> Enum.sort_by(&elem(&1, 1))
-    |> List.last() == {195, 398_371}
+           |> Enum.sort_by(&elem(&1, 1))
+           |> List.last() == {195, 398_371}
   end
 
   test "part 2" do

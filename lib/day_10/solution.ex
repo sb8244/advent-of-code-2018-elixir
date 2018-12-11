@@ -17,18 +17,17 @@ defmodule Advent.Day10.Solution do
     {tick, visualize(points)}
   end
 
-
   def visualize(points) do
     points =
       Enum.map(points, fn {point, _vel} ->
         point
       end)
 
-    {min_x, max_x} = points |> Enum.map(& elem(&1, 0)) |> Enum.min_max
-    {min_y, max_y} = points |> Enum.map(& elem(&1, 1)) |> Enum.min_max
+    {min_x, max_x} = points |> Enum.map(&elem(&1, 0)) |> Enum.min_max()
+    {min_y, max_y} = points |> Enum.map(&elem(&1, 1)) |> Enum.min_max()
 
-    Enum.reduce((min_y..max_y), "", fn y, str ->
-      Enum.reduce((min_x..max_x), str, fn x, str ->
+    Enum.reduce(min_y..max_y, "", fn y, str ->
+      Enum.reduce(min_x..max_x, str, fn x, str ->
         if Enum.member?(points, {x, y}) do
           str <> "X"
         else
@@ -58,7 +57,8 @@ defmodule Advent.Day10.Solution do
         same = pos_x == test_x && pos_y == test_y
         x_diff = abs(pos_x - test_x)
         y_diff = abs(pos_y - test_y)
-        touching = x_diff <= 1 && y_diff <= 1 #  (x_diff == 1 && y_diff == 0) || (y_diff == 1 && x_diff == 0)
+        #  (x_diff == 1 && y_diff == 0) || (y_diff == 1 && x_diff == 0)
+        touching = x_diff <= 1 && y_diff <= 1
 
         !same && touching
       end)
