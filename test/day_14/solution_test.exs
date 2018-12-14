@@ -14,6 +14,8 @@ defmodule Advent.Day14.SolutionTest do
   test "part 2 sample" do
     assert solve_for("51589") == 9
     assert solve_for("01245") == 5
+    assert solve_for("012451") == 5
+    assert solve_for("0124515") == 5
     assert solve_for("59414") == 2018
   end
 
