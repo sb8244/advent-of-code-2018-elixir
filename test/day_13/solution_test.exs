@@ -56,7 +56,7 @@ defmodule Advent.Day13.SolutionTest do
       end)
 
     if length(next_pieces) <= 1 do
-      IO.inspect {"Only 1 piece left", next_pieces}
+      IO.inspect {"#{length(next_pieces)} piece left", next_pieces}
       {:halt, "#{length(next_pieces)} piece left", next_pieces}
     else
       {graph, next_pieces}
