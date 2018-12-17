@@ -1,9 +1,9 @@
-defmodule Advent.Day17.Solution do
+defmodule Advent.Day17.SolutionBonked do
   defmodule State do
     def new() do
       %{
-        max_y: -1000,
-        min_y: 1000,
+        max_y: 0,
+        min_y: 0,
         max_x: 500,
         min_x: 500,
         cells: %{
@@ -21,10 +21,7 @@ defmodule Advent.Day17.Solution do
     end
 
     def set_water_flow(state = %{cells: cells}, {x, y}) do
-      case get_cell(state, {x, y}) do
-        "." -> %{state | cells: Map.put(cells, {x, y}, "|")}
-        "_" -> state
-      end
+      %{state | cells: Map.put(cells, {x, y}, "|")}
     end
 
     def get_cell(_state = %{cells: cells}, {x, y}) do
@@ -51,82 +48,84 @@ defmodule Advent.Day17.Solution do
   end
 
   def solve(input) do
-    setup_state = setup(input)
-    final = flow_water(setup_state, {500, 1})
-
-    Enum.each(final.cells, fn {coords, cell} ->
-      if State.get_cell(setup_state, coords) == "#" and cell != "#" do
-        raise "something went wrong"
-      end
-    end)
-
-    final
+    input
+    |> setup()
+    |> flow_water([{500, 0}], MapSet.new())
   end
 
-  def flow_water(state = %{max_y: max_y}, {_x, y}) when y > max_y do
+  def flow_water(state, [], _) do
     state
   end
 
-  def flow_water(state, coords) do
-    # State.print(state)
-
-    # Start with the cell as a |
-    next_state = State.set_water_flow(state, coords)
-
-    next_state = handle_wall_fill(next_state, coords)
-    next_state = go_down(next_state, coords)
-    next_state = go_left(next_state, coords)
-    next_state = go_right(next_state, coords)
-
-    next_state
-  end
-
-  # If the cell is contained by walls, then set the entire row to ~
-  defp handle_wall_fill(state, coords) do
-    case cell_contained_by_walls?(state, coords) do
-      false ->
-        state
-
-      contained_coords ->
-        Enum.reduce(contained_coords, state, fn coords, next_state ->
-          State.set_water(next_state, coords)
-        end)
-        |> State.set_water(coords)
-    end
-  end
-
-  # If the cell below is a ., let's go down
-  # defp go_down({:done, _} = acc, _), do: acc
-  defp go_down(state = %{max_y: max_y}, {x, y}) do
-    below = State.get_cell(state, {x, y+1})
-    if below == "." and y <= max_y do
-      flow_water(state, {x, y+1})
+  def flow_water(state = %{max_y: max_y}, [curr = {x, y} | frontier], done) do
+    if MapSet.member?(done, curr) or y > max_y do
+      flow_water(state, frontier, MapSet.put(done, curr))
     else
-      state
-    end
-  end
+      # State.print(state)
+      # IO.inspect frontier
+      # Process.sleep(50)
+      cell = State.get_cell(state, curr)
+      up = State.get_cell(state, {x, y-1})
 
-  # defp go_left({:done, _} = acc, _), do: acc
-  defp go_left(state, {x, y}) do
-    left = State.get_cell(state, {x-1, y})
-    below = State.get_cell(state, {x, y+1})
+      # IO.inspect {curr, cell}
 
-    if left == "." && below in ["~", "#"] do
-      flow_water(state, {x-1, y})
-    else
-      state
-    end
-  end
+      if cell_maxed_out?(state, curr) do
+        # up
 
-  # defp go_right({:done, _} = acc, _), do: acc
-  defp go_right(state, {x, y}) do
-    right = State.get_cell(state, {x+1, y})
-    below = State.get_cell(state, {x, y+1})
+        if up == "." do
+          flow_water(state, frontier, MapSet.put(done, curr))
+        else
+          # IO.inspect {"maxed", {x, y-1}}
+          flow_water(state, [{x, y-1}] ++ frontier, MapSet.put(done, curr))
+        end
+      else
+        case cell do
+          "#" ->
+            flow_water(state, frontier, MapSet.put(done, curr))
 
-    if right == "." && below in ["~", "#"] do
-      flow_water(state, {x+1, y})
-    else
-      state
+          _ ->
+            {new_state, frontier_add} =
+              case cell_contained_by_walls?(state, curr) do
+                false ->
+                  {State.set_water_flow(state, curr), []}
+
+                contained_coords ->
+                  {Enum.reduce(contained_coords, state, fn coords, state ->
+                    State.set_water(state, coords)
+                  end), [{x-1, y-1}, {x, y-1}, {x+1, y-1}]}
+              end
+
+            below = State.get_cell(new_state, {x, y+1})
+            left = State.get_cell(new_state, {x-1, y})
+            right = State.get_cell(new_state, {x+1, y})
+
+            case below do
+              c when c in ["~", "#"] ->
+                frontier_add = if left != "|" do
+                  [{x-1, y} | frontier_add]
+                else
+                  frontier_add
+                end
+
+                frontier_add = if right != "|" do
+                  [{x+1, y} | frontier_add]
+                else
+                  frontier_add
+                end
+
+                # left+right
+                flow_water(new_state, frontier ++ frontier_add, done)
+
+              "." ->
+                new_state = State.set_water_flow(state, curr)
+                # down
+                flow_water(new_state, [{x, y+1} | frontier_add] ++ frontier, done)
+
+              "|" ->
+                flow_water(new_state, frontier_add ++ frontier, done)
+            end
+        end
+      end
     end
   end
 
@@ -140,7 +139,7 @@ defmodule Advent.Day17.Solution do
         if cell == "#" do
           {:halt, {coords_acc, true}}
         else
-          if below == "." or below == "|" do
+          if below == "." do
             {:halt, {[], false}}
           else
             {:cont, {[coords | coords_acc], stopped}}

@@ -7,26 +7,34 @@ defmodule Advent.Day17.SolutionTest do
   @input File.read!("input/17.txt") |> String.trim()
 
   test "part 1 sample" do
-    state = %{cells: cells, max_y: max_y} = Solution.solve(@sample_input)
+    %{cells: cells, max_y: max_y} = Solution.solve(@sample_input)
 
     assert cells
-    |> Enum.filter(fn {{x, y}, cell} ->
+    |> Enum.filter(fn {{_x, y}, cell} ->
       y <= max_y and cell in ["~", "|"]
     end)
-    |> length()
-    |> Kernel.-(1) == 57
+    |> length() == 57
   end
 
   test "part 1" do
-    state = %{cells: cells, max_y: max_y} = Solution.solve(@input)
-    Solution.State.print(state)
+    _state = %{cells: cells, max_y: max_y, min_y: min_y} = Solution.solve(@input)
+    # Solution.State.print(state)
 
-    cells
-    |> Enum.filter(fn {{x, y}, cell} ->
-      y <= max_y and cell in ["~", "|"]
+    assert cells
+    |> Enum.filter(fn {{_x, y}, cell} ->
+      y >= min_y and y <= max_y and cell in ["~", "|", "+"]
     end)
-    |> length()
-    |> Kernel.-(1) # adjust for source
-    |> IO.inspect()
+    |> length() == 31934
+  end
+
+  test "part 2" do
+    _state = %{cells: cells, max_y: max_y, min_y: min_y} = Solution.solve(@input)
+    # Solution.State.print(state)
+
+    assert cells
+    |> Enum.filter(fn {{_x, y}, cell} ->
+      y >= min_y and y <= max_y and cell in ["~"]
+    end)
+    |> length() == 24790
   end
 end
