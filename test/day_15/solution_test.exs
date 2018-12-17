@@ -65,14 +65,14 @@ defmodule Advent.Day15.SolutionTest do
 
     {_power, graph} =
       (1..100)
-      |> Enum.reduce_while(nil, fn elf_power, acc ->
-        graph = %{units: units} = Solution.solve(input, elf_power: elf_power)
-
-        if String.starts_with?(List.first(Map.keys(units)), "E_") && length(Map.keys(units)) == elf_count do
-          {:halt, {elf_power, graph}}
-        else
-          {:cont, acc}
-        end
+      |> Enum.map(fn elf_power ->
+        Task.async(fn ->
+          {elf_power, Solution.solve(input, elf_power: elf_power)}
+        end)
+      end)
+      |> Enum.map(&Task.await/1)
+      |> Enum.find(fn {_elf_power, %{units: units}} ->
+        String.starts_with?(List.first(Map.keys(units)), "E_") && length(Map.keys(units)) == elf_count
       end)
 
     assert graph.iteration == 46
