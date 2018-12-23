@@ -28,12 +28,82 @@ defmodule Advent.Day23.SolutionTest do
   end
 
   test "part 2" do
+    # Idea for part 2 is to get the distances and then do a "binary search" for the closest max points. This is
+    # a bit messy in practice due to having competing coordinates. So once it got to a small enough rstep (95),
+    # I just ran the rest with step=10 and it was the right answer.
     input = File.read!("input/23.txt") |> String.trim()
 
     bots = parse_input(input)
 
-    part_2_algorithm(bots)
+    {low_x, high_x} = Map.keys(bots) |> Enum.map(& elem(&1, 0)) |> Enum.min_max()
+    {low_y, high_y} = Map.keys(bots) |> Enum.map(& elem(&1, 1)) |> Enum.min_max()
+    {low_z, high_z} = Map.keys(bots) |> Enum.map(& elem(&1, 2)) |> Enum.min_max()
+    {min_r, max_r} = Map.values(bots) |> Enum.min_max()
+    rstep = max_r - min_r
+
+    {[{x, y, z}], _} = part_2_algorithm(bots, {low_x, high_x}, {low_y, high_y}, {low_z, high_z}, rstep)
+    {[{x, y, z}], _} = part_2_algorithm(bots, {x-rstep, x+rstep}, {y-rstep, y+rstep}, {z-rstep, z+rstep}, Integer.floor_div(rstep, 2))
+
+    rstep = Integer.floor_div(rstep, 2)
+    {[{x, y, z}], _} = part_2_algorithm(bots, {x-rstep, x+rstep}, {y-rstep, y+rstep}, {z-rstep, z+rstep}, Integer.floor_div(rstep, 2))
+
+    rstep = Integer.floor_div(rstep, 2)
+    {[{x, y, z}], _} = part_2_algorithm(bots, {x-rstep, x+rstep}, {y-rstep, y+rstep}, {z-rstep, z+rstep}, Integer.floor_div(rstep, 2))
+
+    rstep = Integer.floor_div(rstep, 2)
+    {[{x, y, z}], _} = part_2_algorithm(bots, {x-rstep, x+rstep}, {y-rstep, y+rstep}, {z-rstep, z+rstep}, Integer.floor_div(rstep, 2))
+
+    rstep = Integer.floor_div(rstep, 2)
+    {[{x, y, z}], _} = part_2_algorithm(bots, {x-rstep, x+rstep}, {y-rstep, y+rstep}, {z-rstep, z+rstep}, Integer.floor_div(rstep, 2))
+
+    rstep = Integer.floor_div(rstep, 2)
+    {[{x, y, z} | _], _} = part_2_algorithm(bots, {x-rstep, x+rstep}, {y-rstep, y+rstep}, {z-rstep, z+rstep}, Integer.floor_div(rstep, 2))
+
+    rstep = Integer.floor_div(rstep, 2)
+    {[{x, y, z} | _], _} = part_2_algorithm(bots, {x-rstep, x+rstep}, {y-rstep, y+rstep}, {z-rstep, z+rstep}, Integer.floor_div(rstep, 2))
+
+    rstep = Integer.floor_div(rstep, 2)
+    {[{x, y, z} | _], _} = part_2_algorithm(bots, {x-rstep, x+rstep}, {y-rstep, y+rstep}, {z-rstep, z+rstep}, Integer.floor_div(rstep, 2))
+
+    rstep = Integer.floor_div(rstep, 2)
+    {[{x, y, z} | _], _} = part_2_algorithm(bots, {x-rstep, x+rstep}, {y-rstep, y+rstep}, {z-rstep, z+rstep}, Integer.floor_div(rstep, 2))
+
+    rstep = Integer.floor_div(rstep, 2)
+    {[{x, y, z} | _], _} = part_2_algorithm(bots, {x-rstep, x+rstep}, {y-rstep, y+rstep}, {z-rstep, z+rstep}, Integer.floor_div(rstep, 2))
+
+    rstep = Integer.floor_div(rstep, 2)
+    {[{x, y, z} | _], _} = part_2_algorithm(bots, {x-rstep, x+rstep}, {y-rstep, y+rstep}, {z-rstep, z+rstep}, Integer.floor_div(rstep, 2))
+
+    rstep = Integer.floor_div(rstep, 2)
+    {[{x, y, z} | _], _} = part_2_algorithm(bots, {x-rstep, x+rstep}, {y-rstep, y+rstep}, {z-rstep, z+rstep}, Integer.floor_div(rstep, 2))
+
+    rstep = Integer.floor_div(rstep, 2)
+    {[{x, y, z} | _], _} = part_2_algorithm(bots, {x-rstep, x+rstep}, {y-rstep, y+rstep}, {z-rstep, z+rstep}, Integer.floor_div(rstep, 2))
+
+    rstep = Integer.floor_div(rstep, 2)
+    {[{x, y, z} | _], _} = part_2_algorithm(bots, {x-rstep, x+rstep}, {y-rstep, y+rstep}, {z-rstep, z+rstep}, Integer.floor_div(rstep, 2))
+
+    rstep = Integer.floor_div(rstep, 2)
+    {[{x, y, z} | _], _} = part_2_algorithm(bots, {x-rstep, x+rstep}, {y-rstep, y+rstep}, {z-rstep, z+rstep}, Integer.floor_div(rstep, 2))
+
+    rstep = Integer.floor_div(rstep, 2)
+    {[{x, y, z} | _], _} = part_2_algorithm(bots, {x-rstep, x+rstep}, {y-rstep, y+rstep}, {z-rstep, z+rstep}, Integer.floor_div(rstep, 2))
+
+    rstep = Integer.floor_div(rstep, 2)
+    {[{x, y, z} | _], _} = part_2_algorithm(bots, {x-rstep, x+rstep}, {y-rstep, y+rstep}, {z-rstep, z+rstep}, Integer.floor_div(rstep, 2))
+
+    rstep = Integer.floor_div(rstep, 2)
+    {[{x, y, z} | _], _} = part_2_algorithm(bots, {x-rstep, x+rstep}, {y-rstep, y+rstep}, {z-rstep, z+rstep}, Integer.floor_div(rstep, 2))
+
+    rstep = Integer.floor_div(rstep, 2)
+    {[{x, y, z} | _], _} = part_2_algorithm(bots, {x-rstep, x+rstep}, {y-rstep, y+rstep}, {z-rstep, z+rstep}, Integer.floor_div(rstep, 2))
+
+    {coords, _} = part_2_algorithm(bots, {x-rstep, x+rstep}, {y-rstep, y+rstep}, {z-rstep, z+rstep}, 10)
+    assert Enum.map(coords, fn {x,y,z} -> x+y+z end)
+    |> Enum.sort()
+    |> List.first() == 112997634
   end
+
 
   # 583 when r_step = min_r
   # 762 when r_step = min_r / 5
@@ -42,63 +112,39 @@ defmodule Advent.Day23.SolutionTest do
   # 826 min_r / 12
   # 843 min _r / 14 {15845720, 46721849, 46256008}
   # 847 min_r / 16  {18520766, 47613535, 45810182}
-  def part_2_algorithm(bots) do
-    {low_x, high_x} = Map.keys(bots) |> Enum.map(& elem(&1, 0)) |> Enum.min_max()
-    {low_y, high_y} = Map.keys(bots) |> Enum.map(& elem(&1, 1)) |> Enum.min_max()
-    {low_z, high_z} = Map.keys(bots) |> Enum.map(& elem(&1, 2)) |> Enum.min_max()
-    {min_r, max_r} = Map.values(bots) |> Enum.min_max()
-    r_step = Integer.floor_div(max_r - min_r, 18)
-
-    # {low_x, high_x} = {15845720 - 1_000_000, 18520766 + 1_000_000}
-    # {low_y, high_y} = {46721849 - 1_000_000, 47613535 + 1_000_000}
-    # {low_z, high_z} = {45810182 - 1_000_000, 46256008 + 1_000_000}
-    # 50k = 110727751, 856
-    # 50k, padding = 111027751, 858
-
+  def part_2_algorithm(bots, {low_x, high_x}, {low_y, high_y}, {low_z, high_z}, r_step) do
+    IO.inspect r_step
     xs = Stream.iterate(low_x, &(&1 + r_step)) |> Enum.take_while(& &1 < high_x)
     ys = Stream.iterate(low_y, &(&1 + r_step)) |> Enum.take_while(& &1 < high_y)
     zs = Stream.iterate(low_z, &(&1 + r_step)) |> Enum.take_while(& &1 < high_z)
-    chunked_xs = Enum.chunk_every(xs, Integer.floor_div(Integer.floor_div(high_x - low_x, r_step), 6))
-    IO.inspect length(chunked_xs)
 
-    Enum.map(chunked_xs, fn xs ->
-      Task.async(fn ->
-        Enum.reduce(xs, {[], 0}, fn x, acc ->
-          IO.inspect x
-          Enum.reduce(ys, acc, fn y, acc ->
-            Enum.reduce(zs, acc, fn z, acc = {max_coords, max_count} ->
-              in_radius =
-                Enum.filter(bots, fn {{x2, y2, z2}, radius} ->
-                  dist = abs(x - x2) + abs(y - y2) + abs(z - z2)
-                  dist <= radius
-                end)
-                |> length()
-
-              if in_radius == max_count do
-                {[{x, y, z} | max_coords], in_radius}
-              else
-                if in_radius > max_count do
-                  {[{x, y, z}], in_radius}
-                else
-                  acc
-                end
-              end
+    Enum.reduce(xs, {[], 0}, fn x, acc ->
+      Enum.reduce(ys, acc, fn y, acc ->
+        Enum.reduce(zs, acc, fn z, acc = {max_coords, max_count} ->
+          in_radius =
+            Enum.filter(bots, fn {{x2, y2, z2}, radius} ->
+              dist = abs(x - x2) + abs(y - y2) + abs(z - z2)
+              dist <= radius
             end)
-          end)
+            |> length()
+
+          if in_radius == max_count do
+            {[{x, y, z} | max_coords], in_radius}
+          else
+            if in_radius > max_count do
+              {[{x, y, z}], in_radius}
+            else
+              acc
+            end
+          end
         end)
       end)
     end)
-    |> Enum.map(& Task.await(&1, 60_000*5))
-    |> Enum.sort_by(&elem(&1, 1))
-    |> List.last()
-    |> IO.inspect()
-    |> elem(0)
-    |> Enum.map(fn {x,y,z} -> x+y+z end)
-    |> Enum.sort()
-    |> List.first()
-    |> IO.inspect()
-
-    # IO.inspect {low_x, high_x, low_y ,high_y, low_z, high_z, min_r, max_r}
+    # |> elem(0)
+    # |> Enum.map(fn {x,y,z} -> x+y+z end)
+    # |> Enum.sort()
+    # |> List.first()
+    # |> IO.inspect()
   end
 
   def most_in_range_for_largest(bots) do
