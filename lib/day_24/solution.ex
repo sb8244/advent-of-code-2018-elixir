@@ -2,7 +2,7 @@ defmodule Advent.Day24.Solution do
   defmodule Group do
     defstruct [:id, :type, :num_units, :hp, :attack_type, :attack_power, :initiative, weak_to: [], immune_to: []]
 
-    def new(id, type, num_units, hp, weak_to_str, immune_to_str, attack_power, attack_type, initiative) do
+    def new(id, type, num_units, hp, weak_to_str, immune_to_str, attack_power, boost, attack_type, initiative) do
       %__MODULE__{
         id: id,
         type: type,
@@ -10,7 +10,7 @@ defmodule Advent.Day24.Solution do
         hp: String.to_integer(hp),
         weak_to: String.split(weak_to_str, ", ") |> Enum.reject(& &1 == ""),
         immune_to: String.split(immune_to_str, ", ") |> Enum.reject(& &1 == ""),
-        attack_power: String.to_integer(attack_power),
+        attack_power: String.to_integer(attack_power) + boost,
         attack_type: attack_type,
         initiative: String.to_integer(initiative)
       }
@@ -36,8 +36,8 @@ defmodule Advent.Day24.Solution do
 #  989 units each with 1274 hit points (immune to fire; weak to bludgeoning,
 #   slashing) with an attack that does 25 slashing damage at initiative 3
 
-  def construct_groups(immune_input, infection_input) do
-    Map.merge(construct_group(immune_input, :immune), construct_group(infection_input, :infection))
+  def construct_groups(immune_input, infection_input, immune_boost: boost) do
+    Map.merge(construct_group(immune_input, :immune, boost), construct_group(infection_input, :infection, 0))
   end
 
   def fight(groups) do
@@ -54,7 +54,7 @@ defmodule Advent.Day24.Solution do
     end)
   end
 
-  def construct_group(input, type) do
+  def construct_group(input, type, boost) do
     String.split(input, "\n")
     |> Enum.with_index()
     |> Enum.reduce(%{}, fn {line, id}, acc ->
@@ -64,7 +64,7 @@ defmodule Advent.Day24.Solution do
       [_, immune_to] = Regex.run(~r/immune to ([\w,\s]*)/, line) || [nil, ""]
 
       id = "#{type}:#{id+1}"
-      group = Group.new(id, type, num_units, hp, weak_to, immune_to, attack_power, attack_type, initiative)
+      group = Group.new(id, type, num_units, hp, weak_to, immune_to, attack_power, boost, attack_type, initiative)
       Map.put(acc, id, group)
     end)
   end
@@ -94,7 +94,7 @@ defmodule Advent.Day24.Solution do
         end)
         |> List.last()
 
-      if will_attack do
+      if will_attack && Group.compute_damage(attacker: group, defender: will_attack) > 0 do
         {Map.put(acc, group.id, will_attack.id), [will_attack | taken_groups]}
       else
         {acc, taken_groups}
@@ -103,12 +103,12 @@ defmodule Advent.Day24.Solution do
     |> elem(0)
   end
 
-  defp attacking(ogroups, targets) do
-    ogroups
+  defp attacking(groups, targets) do
+    groups
     |> Map.values()
     |> Enum.sort_by(& &1.initiative)
     |> Enum.reverse()
-    |> Enum.reduce(ogroups, fn attacking, groups ->
+    |> Enum.reduce(groups, fn attacking, groups ->
       attacking = Map.get(groups, attacking.id)
 
       if attacking do
